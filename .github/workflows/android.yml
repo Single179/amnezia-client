@@ -1,0 +1,29 @@
+name: Build Android APK
+
+on: 
+  workflow_dispatch:  # Разрешает ручной запуск
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup JDK
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        
+    - name: Build APK
+      run: |
+        cd client/Android
+        chmod +x gradlew
+        ./gradlew assembleRelease
+        
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: amnezia-apk
+        path: client/Android/app/build/outputs/apk/release/*.apk
